@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      # Telling to the Spring Boot Framework if there are no tables created inside internal database, please go ahead and create them.
+      # based upon the SQL instructions that will be provided automatically during startup.
+      ddl-auto: update
+    # Print all SQL queries that Spring execute against to the database on the console.
+    show-sql: true
