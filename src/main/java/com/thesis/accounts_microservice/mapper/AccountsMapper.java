@@ -11,7 +11,7 @@ public class AccountsMapper {
         return accountsDTO;
     }
 
-    public static Accounts mapToAccountEntity(Accounts accounts, AccountsDTO accountsDTO) {
+    public static Accounts mapToAccountEntity(AccountsDTO accountsDTO, Accounts accounts) {
         accounts.setAccountNumber(accountsDTO.getAccountNumber());
         accounts.setAccountType(accountsDTO.getAccountType());
         accounts.setBranchAddress(accountsDTO.getBranchAddresses());

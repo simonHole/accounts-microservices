@@ -15,4 +15,6 @@ public interface IAccountsService {
      * @return customerDTO result
      */
     CustomerDTO fetchAccount(String mobilePhone);
+
+    boolean updateAccount(CustomerDTO customerDTO);
 }
