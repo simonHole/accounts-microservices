@@ -9,4 +9,5 @@ public class CustomerDTO implements Serializable {
     private String name;
     private String email;
     private String mobileNumber;
+    private AccountsDTO accountsDTO;
 }
