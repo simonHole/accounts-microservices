@@ -17,3 +17,6 @@ spring:
       ddl-auto: update
     # Print all SQL queries that Spring execute against to the database on the console.
     show-sql: true
+springdoc:
+  swagger-ui:
+    path: /api-docs

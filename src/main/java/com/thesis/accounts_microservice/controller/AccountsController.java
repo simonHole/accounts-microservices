@@ -5,22 +5,40 @@ import com.thesis.accounts_microservice.dto.AccountsDTO;
 import com.thesis.accounts_microservice.dto.CustomerDTO;
 import com.thesis.accounts_microservice.dto.ResponseDTO;
 import com.thesis.accounts_microservice.service.IAccountsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
+@Validated
+@Tag(
+        name = "Account REST API",
+        description = "Account basic CRUD operations in REST API"
+)
 public class AccountsController {
 
-    private final IAccountsService iAccountsService;
-    private IAccountsService accountsService;
+    private final IAccountsService accountsService;
 
+    @Autowired
+    public AccountsController(IAccountsService accountsService) {
+        this.accountsService = accountsService;
+    }
+
+    @Operation(
+            summary = "Create new account CREATE REST API endpoint",
+            description = "Create new account with bounded customer by send data only basic data"
+    )
     @PostMapping(path = "/create-account")
-    public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO customerDTO) {
 
         accountsService.createAccount(customerDTO);
 
@@ -29,8 +47,15 @@ public class AccountsController {
                 .body(new ResponseDTO(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));
     }
 
+    @Operation(
+            summary = "Find existing account READ REST API endpoint",
+            description = "Find and return customer with account if exists in database."
+    )
     @GetMapping("/fetch-customer")
-    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobilePhone) {
+    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam
+                                                               @Pattern(regexp = "(^$|[0-9]{9})",
+                                                                       message = "Entered phone number is invalid. Must have 9 digits.")
+                                                               String mobilePhone) {
         CustomerDTO customerDTO = accountsService.fetchAccount(mobilePhone);
 
         return ResponseEntity
@@ -38,10 +63,31 @@ public class AccountsController {
                 .body(customerDTO);
     }
 
+    @Operation(
+            summary = "Update whole existing account PUT REST API endpoint",
+            description = "Update all data about particular user based on its mobile phone number"
+    )
     @PutMapping("/update-customer")
-    public ResponseEntity<ResponseDTO> updateAccount(@RequestBody CustomerDTO customerDTO) {
-        boolean isUpdated = iAccountsService.updateAccount(customerDTO);
+    public ResponseEntity<ResponseDTO> updateAccount(@Valid @RequestBody CustomerDTO customerDTO) {
+        boolean isUpdated = accountsService.updateAccount(customerDTO);
         if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(AccountsConstants.STATUS_500, AccountsConstants.MESSAGE_500));
+        }
+    }
+
+    @DeleteMapping("/delete-customer")
+    public ResponseEntity<ResponseDTO> deleteAccount(@RequestParam
+                                                         @Pattern(regexp = "(^$|[0-9]{9})",
+                                                                 message = "Entered phone number is invalid. Must have 9 digits.")
+                                                         String mobilePhone) {
+        boolean isDeleted = accountsService.deleteAccount(mobilePhone);
+        if (isDeleted) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new ResponseDTO(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));

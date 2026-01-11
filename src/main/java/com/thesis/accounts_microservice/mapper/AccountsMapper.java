@@ -7,14 +7,14 @@ public class AccountsMapper {
     public static AccountsDTO mapToAccountsDTO(Accounts accounts, AccountsDTO accountsDTO) {
         accountsDTO.setAccountNumber(accounts.getAccountNumber());
         accountsDTO.setAccountType(accounts.getAccountType());
-        accountsDTO.setBranchAddresses(accounts.getBranchAddress());
+        accountsDTO.setBranchAddress(accounts.getBranchAddress());
         return accountsDTO;
     }
 
     public static Accounts mapToAccountEntity(AccountsDTO accountsDTO, Accounts accounts) {
         accounts.setAccountNumber(accountsDTO.getAccountNumber());
         accounts.setAccountType(accountsDTO.getAccountType());
-        accounts.setBranchAddress(accountsDTO.getBranchAddresses());
+        accounts.setBranchAddress(accountsDTO.getBranchAddress());
         return accounts;
     }
 }
